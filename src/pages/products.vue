@@ -70,7 +70,7 @@ const getProducts = async () => {
   console.log("Token:", token);
 
   const res = await axios.get(API_URL, {
-   headers: { Authorization: `Bearer ${token}` }
+   headers: { token }
 
   });
 
