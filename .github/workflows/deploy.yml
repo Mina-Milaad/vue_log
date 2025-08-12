@@ -1,0 +1,40 @@
+name: Build and Deploy Vue App
+
+on:
+  push:
+    branches:
+      - main  # أو الفرع اللي انت شغال عليه
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/my-vue-app:latest .
+
+    - name: Push Docker image to Docker Hub
+      run: |
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/my-vue-app:latest
+
+    - name: Deploy on server via SSH
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-vue-app:latest
+          docker stop my-vue-app || true
+          docker rm my-vue-app || true
+          docker run -d --name my-vue-app -p 80:80 ${{ secrets.DOCKERHUB_USERNAME }}/my-vue-app:latest
