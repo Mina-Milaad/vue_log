@@ -36,8 +36,5 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_SSH_KEY }}   # ملاحظة: هنا لازم تستخدم المفتاح الخاص (key) مش password
           script: |
-            cd /path/to/vue/project/on/server
-            docker pull mybyelias/my-vue-app:latest
-            docker stop my-vue-app || true
-            docker rm my-vue-app || true
-            docker run -d --name my-vue-app -p 80:80 mybyelias/my-vue-app:latest
+            cd /home/gns
+            ./vue-app.sh
