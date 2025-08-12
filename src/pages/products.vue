@@ -104,7 +104,7 @@ const deleteProduct = async (id) => {
   getProducts();
 };
 
-// Edit productt
+// Edit producttt
 const editProduct = (product) => {
   editMode.value = true;
   editProductData.value = { ...product };
